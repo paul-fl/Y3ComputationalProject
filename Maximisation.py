@@ -31,6 +31,22 @@ class Maximisation:
         
         return guess, best_func_value
 
-    def gradient_method(self, alpha = 1e-5, max_iterations = 1000, tolerance = 1e-6):
-        pass
+    def gradient_method(self, guess, alpha = 1e-5, max_iterations = 1000, tolerance = 1e-6):
+        guess = np.array(guess, dtype=float)
+
+        for iteration in range(max_iterations):
+            finite_difference = FiniteDifference(self.func, guess)
+            gradient = finite_difference.forward_difference()
+
+            guess += alpha * gradient
+
+            if np.linalg.norm(gradient) < tolerance:
+                print(f"Converged in {iteration} iterations.")
+                break
+
+        optimal_value = self.func(guess[0], guess[1])
+        optimal_point = (guess[0], guess[1])
+        
+        return optimal_point, optimal_value
+    
         

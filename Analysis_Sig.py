@@ -86,10 +86,14 @@ def significance_function(m_l, m_u):
 
 maximisation = Maximisation(func=significance_function, m_l_values=m_l_values, m_u_values=m_u_values)
 
+grid_search_values, grid_search_s = maximisation.grid_search()
+
 best_values, max_s = maximisation.grid_search()
+print(f"Grid Search - Best Values: {grid_search_values}, Max Significance: {grid_search_s}")
 
-print(f"max s value: {max_s}, best values: {best_values}")
-
+# Step 2: Perform gradient ascent
+gradient_values, gradient_s = maximisation.gradient_method(best_values)
+print(f"Gradient Method - Best Values: {gradient_values}, Max Significance: {gradient_s}")
 
         
 
