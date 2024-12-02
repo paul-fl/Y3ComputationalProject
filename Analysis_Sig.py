@@ -6,6 +6,7 @@ A module to perform the significance analysis for section 4
 
 import numpy as np
 import matplotlib.pyplot as plt
+from scipy.stats import poisson
 from Integration import ExtendedTrapezium
 from Maximisation import Maximisation
 
@@ -49,6 +50,18 @@ class SignificanceAnalysis:
 
         return S
     
+    def five_sigma(self, m_l, m_u):
+        NB = self.int_method.integrate(self.back_func, m_l, m_u)
+        NH = self.int_method.integrate(self.exp_func, m_l, m_u)
+        five_sigma = 5 * np.sqrt(NB) + NB
+
+        total = NH + NB
+
+        p = 1 - poisson.cdf(five_sigma - 1, total)
+
+        return p
+
+
 
 # Run the program 
 ## plot the significance ##
@@ -59,8 +72,8 @@ if __name__ == "__main__":
 
     significance_analysis = SignificanceAnalysis(background, experimental, ExtendedTrapezium)
 
-    m_l_values = np.linspace(120, 124, 10)
-    m_u_values = np.linspace(126, 130, 10)
+    m_l_values = np.linspace(120, 124, 100)
+    m_u_values = np.linspace(126, 130, 100)
 
     sig_matrix = np.zeros((len(m_l_values), len(m_u_values)))
 
@@ -91,10 +104,13 @@ grid_search_values, grid_search_s = maximisation.grid_search()
 best_values, max_s = maximisation.grid_search()
 print(f"Grid Search - Best Values: {grid_search_values}, Max Significance: {grid_search_s}")
 
-# Step 2: Perform gradient ascent
 gradient_values, gradient_s = maximisation.gradient_method(best_values)
 print(f"Gradient Method - Best Values: {gradient_values}, Max Significance: {gradient_s}")
 
-        
+## Find probability fo significance 
 
+m_l_best, m_u_best = gradient_values
+
+five_sigma_prob = significance_analysis.five_sigma(m_l_best, m_u_best)
+print(f"Five-Sigma Probability: {five_sigma_prob:.6f}")
 
