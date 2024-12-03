@@ -7,34 +7,14 @@ A module to perform the significance analysis for section 4
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import poisson
+from Functions import BackgroundFunction, ExperimentalFunction
 from Integration import ExtendedTrapezium
 from Maximisation import Maximisation
+from Inputs import InputAnalysis
 
 
-class BackgroundFunction:
-    
-    def __init__(self, A = 1500, k = 20, m_H = 125.1):
 
-        self.A = A
-        self.k = k
-        self.m_H = m_H
-
-
-    def __call__(self, m):
-
-        return self.A * np.exp(-(m - self.m_H) / self.k)
-    
-class ExperimentalFunction:
-
-    def __init__(self, photon_pairs=470, mean=125.1, sigma=1.4):
-        self.photon_pairs = photon_pairs
-        self.mean = mean
-        self.sigma = sigma
-
-    def __call__(self, m):
-
-        return self.photon_pairs * (1 / (self.sigma * np.sqrt(2 * np.pi))) * np.exp(-((m - self.mean) ** 2) / (2 * self.sigma ** 2))
-    
+        
 class SignificanceAnalysis:
 
     def __init__(self, back_func, exp_func, int_method):
@@ -92,7 +72,7 @@ if __name__ == "__main__":
     plt.title("Signifance heatmap for different levels of m_l and m_u")
     plt.show()
 
-## calculate maximum significance ##
+## Calculate maximum significance ##
 
 def significance_function(m_l, m_u):
     return significance_analysis.calculate_significance(m_l, m_u)
@@ -114,3 +94,37 @@ m_l_best, m_u_best = gradient_values
 five_sigma_prob = significance_analysis.five_sigma(m_l_best, m_u_best)
 print(f"Five-Sigma Probability: {five_sigma_prob:.6f}")
 
+## Shifting input parameters ##
+input_analysis = InputAnalysis(ExtendedTrapezium)
+# Shifting m_H 
+
+shifts_MH = np.linspace(-0.2, 0.2, 100)
+
+NH_m_H = input_analysis.shifted_MH(m_l_best, m_u_best, shifts_MH)
+
+plt.plot(shifts_MH, NH_m_H, marker='x')
+plt.xlabel("m_H shift")
+plt.ylabel("Value of NH")
+plt.show()
+
+# Shifting photons
+
+shifts_photons = np.linspace(0, 0.04, 100)
+
+NH_photons = input_analysis.shifted_photon(m_l_best, m_u_best, shifts_photons)
+
+plt.plot(shifts_photons, NH_photons, marker='x')
+plt.xlabel("photon shift")
+plt.ylabel("Value of NH")
+plt.show()
+
+# Shifting theory
+
+shifts_theory = np.linspace(-0.03, 0.03, 100)
+
+NH_theory = input_analysis.shifted_theory(m_l_best, m_u_best, shifts_theory)
+
+plt.plot(shifts_theory, NH_theory, marker='x')
+plt.xlabel("theory shift")
+plt.ylabel("Value of NH")
+plt.show()

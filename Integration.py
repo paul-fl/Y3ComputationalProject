@@ -27,15 +27,11 @@ class ExtendedTrapezium(GaussianIntegrator):
 
         x = np.linspace(a, b, num_points)  
         y = func(x)
-
-        # Calculate step size
     
         h = (b - a) / (num_points - 1)
 
-        # Calculate integral
-
-        integral = 0.5 * (y[0] + y[-1]) #First and last term
-        integral += sum(y[1:-1]) # Middle terms, first part is inclusive, second argument is not inclusive
+        integral = 0.5 * (y[0] + y[-1])
+        integral += sum(y[1:-1]) 
         integral *= h 
 
         return integral
