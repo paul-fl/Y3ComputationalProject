@@ -17,22 +17,23 @@ from Inputs import InputAnalysis
         
 class SignificanceAnalysis:
 
-    def __init__(self, back_func, exp_func, int_method):
+    def __init__(self, back_func, exp_func, int_method, num_points = 1000):
         self.back_func = back_func
         self.exp_func = exp_func
         self.int_method = int_method
+        self.num_points = num_points
 
     def calculate_significance(self, m_l, m_u):
-        NB = self.int_method.integrate(self.back_func, m_l, m_u)
-        NH = self.int_method.integrate(self.exp_func, m_l, m_u)
+        NB = self.int_method.integrate(self.back_func, m_l, m_u, num_points = self.num_points)
+        NH = self.int_method.integrate(self.exp_func, m_l, m_u, num_points = self.num_points)
 
         S = NH/np.sqrt(NB)
 
         return S
     
     def five_sigma(self, m_l, m_u, combined_uncertainty):
-        NB = self.int_method.integrate(self.back_func, m_l, m_u)
-        NH = self.int_method.integrate(self.exp_func, m_l, m_u)
+        NB = self.int_method.integrate(self.back_func, m_l, m_u, num_points = self.num_points)
+        NH = self.int_method.integrate(self.exp_func, m_l, m_u, num_points = self.num_points)
         five_sigma = 5 * np.sqrt(NB + combined_uncertainty) + NB 
 
         total = NH + NB

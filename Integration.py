@@ -33,19 +33,22 @@ class ErrorFunctionTest(GaussianIntegrator):
 
 class ExtendedTrapezium(GaussianIntegrator):
     
-    def integrate(func, a, b, num_points = 10):
+    def integrate(func, a, b, h = None, num_points = None):
 
+        if num_points is not None:
+            h = (b - a) / (num_points - 1)
+        elif h is not None:
+            num_points = int(np.ceil((b - a) / h)) + 1
+        else:
+            raise ValueError("Either 'h' or 'fixed_num_points' must be provided.")
 
-        x = np.linspace(a, b, num_points)  
+        x = np.linspace(a, b, num_points, dtype=np.float64)
         y = func(x)
-    
-        h = (b - a) / (num_points - 1)
 
-        integral = 0.5 * (y[0] + y[-1])
-        integral += sum(y[1:-1]) 
-        integral *= h 
-
+        integral = 0.5 * (y[0] + y[-1]) + sum(y[1:-1])
+        integral *= h
         return integral
+
     
 class MonteCarlo(GaussianIntegrator):
     pass
