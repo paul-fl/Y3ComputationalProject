@@ -49,8 +49,9 @@ class SignificanceAnalysis:
 if __name__ == "__main__":
     background = BackgroundFunction()
     experimental = ExperimentalFunction()
+    trapezium = ExtendedTrapezium()
 
-    significance_analysis = SignificanceAnalysis(background, experimental, ExtendedTrapezium)
+    significance_analysis = SignificanceAnalysis(background, experimental, trapezium)
 
     m_l_values = np.linspace(120, 124, 100)
     m_u_values = np.linspace(126, 130, 100)
@@ -95,7 +96,7 @@ if __name__ == "__main__":
     print(f"Five-Sigma Probability: {five_sigma_prob:.6f}")
 
     ## Shifting input parameters ##
-    input_analysis = InputAnalysis(ExtendedTrapezium)
+    input_analysis = InputAnalysis(trapezium)
     # Shifting m_H 
 
     shifts_MH = np.linspace(-0.2, 0.2, 100)
