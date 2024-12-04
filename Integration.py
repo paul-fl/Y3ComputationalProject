@@ -33,10 +33,11 @@ class ErrorFunctionTest(GaussianIntegrator):
 
 class ExtendedTrapezium(GaussianIntegrator):
     
-    def integrate(self, a, b, num_points = 1000):
+    def integrate(func, a, b, num_points = 10):
+
 
         x = np.linspace(a, b, num_points)  
-        y = self.gaussian(x)
+        y = func(x)
     
         h = (b - a) / (num_points - 1)
 
@@ -54,7 +55,7 @@ if __name__ == "__main__":
     erf_function = ErrorFunctionTest()
     trapezium  = ExtendedTrapezium()
 
-    a_values = np.linspace(0, 5, 1000)  
+    a_values = np.linspace(0, 5, 100)  
     trapezium_results = []
     erf_results = []
     trapezium_errors = []
@@ -66,7 +67,7 @@ if __name__ == "__main__":
         erf_results.append(erf_result)
         trapezium_results.append(trapezium_result)
 
-        trapezium_errors.append(abs(erf_result - trapezium_result))
+        trapezium_errors.append(abs(trapezium_result - erf_result) / abs(erf_result))
 
     plt.plot(a_values, trapezium_errors, label="Trapezium Error", marker="o")
     plt.xlabel("a")
@@ -75,8 +76,3 @@ if __name__ == "__main__":
     plt.legend()
     plt.grid()
     plt.show()
-
-
-
-
-
