@@ -17,23 +17,22 @@ from Inputs import InputAnalysis
         
 class SignificanceAnalysis:
 
-    def __init__(self, back_func, exp_func, int_method, num_points = 1000):
+    def __init__(self, back_func, exp_func, int_method):
         self.back_func = back_func
         self.exp_func = exp_func
         self.int_method = int_method
-        self.num_points = num_points
 
     def calculate_significance(self, m_l, m_u):
-        NB = self.int_method.integrate(self.back_func, m_l, m_u, num_points = self.num_points)
-        NH = self.int_method.integrate(self.exp_func, m_l, m_u, num_points = self.num_points)
+        NB = self.int_method.integrate(self.back_func, m_l, m_u)
+        NH = self.int_method.integrate(self.exp_func, m_l, m_u)
 
         S = NH/np.sqrt(NB)
 
         return S
     
     def five_sigma(self, m_l, m_u, combined_uncertainty):
-        NB = self.int_method.integrate(self.back_func, m_l, m_u, num_points = self.num_points)
-        NH = self.int_method.integrate(self.exp_func, m_l, m_u, num_points = self.num_points)
+        NB = self.int_method.integrate(self.back_func, m_l, m_u)
+        NH = self.int_method.integrate(self.exp_func, m_l, m_u)
         five_sigma = 5 * np.sqrt(NB + combined_uncertainty) + NB 
 
         total = NH + NB
@@ -49,12 +48,12 @@ class SignificanceAnalysis:
 if __name__ == "__main__":
     background = BackgroundFunction()
     experimental = ExperimentalFunction()
-    trapezium = ExtendedTrapezium()
+    trapezium = ExtendedTrapezium(tol = 1e-6)
 
     significance_analysis = SignificanceAnalysis(background, experimental, trapezium)
 
-    m_l_values = np.linspace(120, 124, 100)
-    m_u_values = np.linspace(126, 130, 100)
+    m_l_values = np.linspace(120, 124, 30)
+    m_u_values = np.linspace(126, 130, 30)
 
     sig_matrix = np.zeros((len(m_l_values), len(m_u_values)))
 
@@ -96,6 +95,7 @@ if __name__ == "__main__":
     print(f"Five-Sigma Probability: {five_sigma_prob:.6f}")
 
     ## Shifting input parameters ##
+
     input_analysis = InputAnalysis(trapezium)
     # Shifting m_H 
 

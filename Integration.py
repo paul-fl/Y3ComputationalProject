@@ -11,9 +11,10 @@ class GaussianIntegrator:
     Base class for performing integration on a Gaussian
     """
 
-    def __init__(self, mean = 0, sigma = 1):
+    def __init__(self, mean = 0, sigma = 1, tol = 1e-3):
         self.mean = mean
         self.sigma = sigma
+        self.tol = tol
     
     def gaussian(self, x):
         
@@ -33,23 +34,30 @@ class ErrorFunctionTest(GaussianIntegrator):
 
 class ExtendedTrapezium(GaussianIntegrator):
     
-    def integrate(self, func, a, b, h = None, num_points = None):
+    def integrate(self, func, a, b, h = 0.5, max_iter=10000):
 
-        if num_points is not None:
-            h = (b - a) / (num_points - 1)
-        elif h is not None:
-            num_points = int(np.ceil((b - a) / h)) + 1
-        else:
-            raise ValueError("Either 'h' or 'fixed_num_points' must be provided.")
-        
+        h = b - a  # Initial step size
+        I_prev = h * 0.5 * (func(a) + func(b))  # First estimate I1
+        iteration = 0
 
-        x = np.linspace(a, b, num_points, dtype=np.float64)
-        y = func(x)
+        while iteration < max_iter:
+            iteration += 1
 
-        integral = 0.5 * (y[0] + y[-1]) + sum(y[1:-1])
-        integral *= h
-        return integral
+            mid_points = np.linspace(a + h / 2, b - h / 2, 2**(iteration - 1))
+            midpoint_sum = np.sum(func(mid_points))
 
+            I_curr = 0.5 * I_prev + h * 0.5 * midpoint_sum
+
+            relative_error = abs((I_curr - I_prev) / I_curr)
+
+            if relative_error < self.tol:
+                print(f"Iterated in {iteration}")
+                return I_curr
+
+            I_prev = I_curr
+            h /= 2  
+
+        raise RuntimeError(f"Failed to converge within {max_iter} iterations.")
     
 class MonteCarlo(GaussianIntegrator):
     pass

@@ -12,7 +12,7 @@ class InputAnalysis:
        self.int_method = int_method
 
     def calculate_NH(self, experimental_function, m_l, m_u):
-        N_H = self.int_method.integrate(func = experimental_function, a = m_l, b= m_u, num_points = 1000)
+        N_H = self.int_method.integrate(func = experimental_function, a = m_l, b= m_u)
 
         return N_H
     
