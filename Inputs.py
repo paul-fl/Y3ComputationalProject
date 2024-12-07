@@ -34,11 +34,20 @@ class InputAnalysis:
 
         for fraction in fractions:
 
-            actual_pairs = self.pairs * (1 - fraction)
-            
-            experimental = ExperimentalFunction(photon_pairs=actual_pairs, mean=124.5, sigma=2.6)
+            total_pairs = self.pairs
 
-            NH_value = self.calculate_NH(experimental, m_l, m_u)
+            shifted_pairs = int(total_pairs * fraction)
+            unshifted_pairs = total_pairs - shifted_pairs
+
+            unshifted_experimental = ExperimentalFunction(photon_pairs=unshifted_pairs, mean=125.0, sigma=2.0)
+
+            shifted_experimental = ExperimentalFunction(photon_pairs=shifted_pairs, mean=124.5, sigma=2.6)
+
+            def combined_function(m):
+                return unshifted_experimental(m) + shifted_experimental(m)
+
+    
+            NH_value = self.calculate_NH(combined_function, m_l, m_u)
             NH_values.append(NH_value)
 
         return NH_values
