@@ -123,11 +123,11 @@ class MonteCarlo(GaussianIntegrator):
     
 class ODE(GaussianIntegrator):
    
-    def euler(self, func, a, b, max_steps = 1000000):
+    def euler(self, func, a, b, max_steps = 100000):
         steps = 2  
         previous_result = 0
 
-        while True:
+        while steps < max_steps:
             h = (b - a) / steps
             integral = 0
             x = a
@@ -144,7 +144,7 @@ class ODE(GaussianIntegrator):
             previous_result = integral
             steps *= 2  
 
-        raise RuntimeError(f"Euler method failed to converge within {max_steps} steps.")
+        return integral, steps
 
     
     def rk4(self, func, a, b, max_steps = 1000000):
@@ -206,22 +206,25 @@ if __name__ == "__main__":
     ode = ODE()
     improper = Improper()
 
-    # erf_result = erf_function.integrate(a = 0, b = 5)
-    # trapezium_result, _ = trapezium.integrate(erf_function.gaussian, a = 0, b = 5)
-    # montecarlo_result, _ = montecarlo.integrate(erf_function.gaussian, a = 0, b = 5)
-    # euler_result, _ = ode.euler(erf_function.gaussian, a = 0,  b = 5)
-    # rk4_result, _ = ode.rk4(erf_function.gaussian, a = 0,  b = 5)
-    # improper_result, _ = improper.integrate(erf_function.gaussian, a = 0, b = 5, steps = 1000)
+    if False:
 
-    # print(f"Actual result: {erf_result}")
-    # print(f"Trapezium result: {trapezium_result}")
-    # print(f"MonteCarlo result: {montecarlo_result}")
-    # print(f"ODE Euler result: {euler_result}")
-    # print(f"ODE RK4 result: {rk4_result}")
-    # print(f"Improper result: {improper_result}")
+        erf_result = erf_function.integrate(a = 0, b = 5)
+        trapezium_result, _ = trapezium.integrate(erf_function.gaussian, a = 0, b = 5)
+        montecarlo_result, _ = montecarlo.integrate(erf_function.gaussian, a = 0, b = 5)
+        euler_result, _ = ode.euler(erf_function.gaussian, a = 0,  b = 5)
+        rk4_result, _ = ode.rk4(erf_function.gaussian, a = 0,  b = 5)
+        improper_result, _ = improper.integrate(erf_function.gaussian, a = 0, b = 5, steps = 1000)
+
+        print(f"Actual result: {erf_result}")
+        print(f"Trapezium result: {trapezium_result}")
+        print(f"MonteCarlo result: {montecarlo_result}")
+        print(f"ODE Euler result: {euler_result}")
+        print(f"ODE RK4 result: {rk4_result}")
+        print(f"Improper result: {improper_result}")
  
     ## Comparisson of number steps to iterate, tiem taken ##
     if True:
+        
         a, b = 0, 5
 
         exact_int = ErrorFunctionTest()
@@ -242,7 +245,7 @@ if __name__ == "__main__":
         rk4_errors = []
         improper_errors = []
 
-        b_values = np.linspace(0.1, 5, 10)
+        b_values = np.linspace(0.1, 5, 100)
 
         # Trapezium
         for b in b_values:
@@ -305,3 +308,10 @@ if __name__ == "__main__":
             improper_errors.append(improper_error)
 
         print(f"Midpoint: Final Result = {result:.10f}, Error = {improper_error:.10f}%, Steps = {steps}, Time Taken = {time_taken:.6f}s")
+
+    ## Plot how the error changes with different upper limit ##
+
+    plt.scatter(b_values, trapezium_errors, marker = 'x')
+    plt.show()
+    plt.scatter(b_values, monte_carlo_errors, marker = 'x')
+    plt.show()
