@@ -129,7 +129,18 @@ class ODE(GaussianIntegrator):
             x += h  
         
         return integral
-    
+  
+class Improper(Simpsons):
+
+    def integrate(self, func, a, b, steps):
+
+        
+        h = 1 / steps
+        midpoints = [b + (k + 0.5) * h for k in range(steps)]
+        midpoint_integral = h * sum(func(m) for m in midpoints)
+
+        return (0.5 - midpoint_integral)
+
 if __name__ == "__main__":
 
 ## Check Integration methods work ##
@@ -138,20 +149,22 @@ if __name__ == "__main__":
     trapezium  = ExtendedTrapezium()
     montecarlo = MonteCarlo()
     ode = ODE()
+    improper = Improper()
 
     erf_result = erf_function.integrate(a = 0, b = 5)
     trapezium_result = trapezium.integrate(erf_function.gaussian, a = 0, b = 5)
     montecarlo_result = montecarlo.integrate(erf_function.gaussian, a = 0, b = 5)
     euler_result = ode.euler(erf_function.gaussian, a = 0,  b = 5)
     rk4_result = ode.rk4(erf_function.gaussian, a = 0,  b = 5)
+    improper_result = improper.integrate(erf_function.gaussian, a = 0, b = 5, steps = 1000)
 
     print(f"Actual result: {erf_result}")
     print(f"Trapezium result: {trapezium_result}")
     print(f"MonteCarlo result: {montecarlo_result}")
     print(f"ODE Euler result: {euler_result}")
     print(f"ODE RK4 result: {rk4_result}")
-
-     
+    print(f"Improper result: {improper_result}")
+ 
 ## Compare integration methods on varying upper limit#
 
     if False:
@@ -233,7 +246,7 @@ if __name__ == "__main__":
 
     # MonteCarlo
     samples = 1
-    max_samples = 10000
+    max_samples = 100000
     start_time = time.time()
     previous_result = 0
     while samples < max_samples:
@@ -243,6 +256,7 @@ if __name__ == "__main__":
         error = abs(result - previous_result) / abs(result)
 
         previous_result = result
+        print(result)
 
         if error < tolerance * 100:
             break
@@ -308,3 +322,23 @@ if __name__ == "__main__":
     
     time_taken = time.time() - start_time
     print(f"Simpsons: Final Result = {result:.10f}, Error = {error_exact:.10f}%, Steps = {steps}, Time Taken = {time_taken:.6f}s")
+
+    # Simpsons
+    steps = 2
+    start_time = time.time()
+    previous_result = 0 
+    while True:
+    
+        result = improper.integrate(func, a, b, steps)
+        
+        error_exact = abs((exact_result - result) / exact_result) * 100
+        error = abs(result - previous_result) / abs(result)
+
+        previous_result = result
+
+        if error < tolerance * 100:
+            break
+        steps += 1
+    
+    time_taken = time.time() - start_time
+    print(f"Improper: Final Result = {result:.10f}, Error = {error_exact:.10f}%, Steps = {steps}, Time Taken = {time_taken:.6f}s")

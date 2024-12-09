@@ -36,10 +36,10 @@ class InputAnalysis:
 
             total_pairs = self.pairs
 
-            shifted_pairs = int(total_pairs * fraction)
+            shifted_pairs = (total_pairs * fraction)
             unshifted_pairs = total_pairs - shifted_pairs
 
-            unshifted_experimental = ExperimentalFunction(photon_pairs=unshifted_pairs, mean=125.0, sigma=2.0)
+            unshifted_experimental = ExperimentalFunction(photon_pairs=unshifted_pairs, mean=125.1, sigma=1.4)
 
             shifted_experimental = ExperimentalFunction(photon_pairs=shifted_pairs, mean=124.5, sigma=2.6)
 
