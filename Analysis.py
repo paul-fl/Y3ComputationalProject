@@ -23,16 +23,16 @@ class SignificanceAnalysis:
         self.int_method = int_method
 
     def calculate_significance(self, m_l, m_u):
-        NB = self.int_method.integrate(self.back_func, m_l, m_u)
-        NH = self.int_method.integrate(self.exp_func, m_l, m_u)
+        NB, NB_steps = self.int_method.integrate(self.back_func, m_l, m_u)
+        NH, NH_steps  = self.int_method.integrate(self.exp_func, m_l, m_u)
 
         S = NH/np.sqrt(NB)
 
         return S
     
     def five_sigma(self, m_l, m_u, combined_uncertainty):
-        NB = self.int_method.integrate(self.back_func, m_l, m_u)
-        NH = self.int_method.integrate(self.exp_func, m_l, m_u)
+        NB, NB_steps = self.int_method.integrate(self.back_func, m_l, m_u)
+        NH, NH_steps = self.int_method.integrate(self.exp_func, m_l, m_u)
         five_sigma = 5 * np.sqrt(NB + combined_uncertainty) + NB 
 
         total = NH + NB
