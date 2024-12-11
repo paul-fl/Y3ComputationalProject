@@ -82,10 +82,10 @@ if __name__ == "__main__":
     grid_search_values, grid_search_s = maximisation.grid_search()
 
     best_values, max_s = maximisation.grid_search()
-    print(f"Grid Search - Best Values: {grid_search_values}, Max Significance: {grid_search_s}")
+    print(f"Grid Search Values: {grid_search_values}, Max Sig: {grid_search_s}")
 
     gradient_values, gradient_s = maximisation.gradient_method(best_values)
-    print(f"Gradient Method - Best Values: {gradient_values}, Max Significance: {gradient_s}")
+    print(f"Gradient Method sValues: {gradient_values}, Max Sig: {gradient_s}")
 
     ## Find probability fo significance 
 

@@ -44,9 +44,9 @@ class Maximisation:
                 print(f"Converged in {iteration} iterations.")
                 break
 
-        optimal_value = self.func(guess[0], guess[1])
-        optimal_point = (guess[0], guess[1])
+        value = self.func(guess[0], guess[1])
+        point = (guess[0], guess[1])
         
-        return optimal_point, optimal_value
+        return point, value
     
         

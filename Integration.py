@@ -176,25 +176,28 @@ class ODE(GaussianIntegrator):
   
 class Improper(Simpsons):
 
-    def integrate(self, func, a, b, max_steps = 10000):
+    def integrate(self, func, b, max_steps=10000):
+        delta = 1.0  
+        simpson_integrator = Simpsons(tol=self.tol)
+        simpson_result, _ = simpson_integrator.integrate(func, b, b + delta)
 
-        
         steps = 2
+        h = 1.0 / steps
         previous_result = 0
         while steps < max_steps:
-            h = 1 / steps
-            midpoints = [b + (k + 0.5) * h for k in range(steps)]
+            midpoints = [b + delta + (k + 0.5) * h for k in range(steps)]
             midpoint_integral = h * sum(func(m) for m in midpoints)
-            result = 0.5 - midpoint_integral
+            result = simpson_result + midpoint_integral 
 
             error = abs((result - previous_result) / result)
             if error < self.tol:
-                return result, steps
+                return (0.5 - result), steps
 
             previous_result = result
             steps *= 2
+            h = 1.0 / steps  
 
-        raise RuntimeError(f"Midpoint method failed to converge within {max_steps} steps.")
+        raise RuntimeError(f"Failed to converge within {max_steps} steps.")
 
 if __name__ == "__main__":
 
@@ -252,6 +255,7 @@ if __name__ == "__main__":
             start_time = time.time()
             result, steps = trapezium_set.integrate(function, a, b)
             time_taken = time.time() - start_time
+            exact_result = exact_int.integrate(a, b)
             trapzeium_error = abs((exact_result - result) / exact_result) * 100
             trapezium_errors.append(trapzeium_error)
 
@@ -263,6 +267,7 @@ if __name__ == "__main__":
             start_time = time.time()
             result, samples = monte_carlo.integrate(function, a, b)
             time_taken = time.time() - start_time
+            exact_result = exact_int.integrate(a, b)
             monte_carlo_error = abs((exact_result - result) / exact_result) * 100
             monte_carlo_errors.append(monte_carlo_error)
 
@@ -274,6 +279,7 @@ if __name__ == "__main__":
             start_time = time.time()
             result, steps = ode.euler(function, a, b, steps)
             time_taken = time.time() - start_time
+            exact_result = exact_int.integrate(a, b)
             euler_error = abs((exact_result - result) / exact_result) * 100
             euler_errors.append(euler_error)
 
@@ -284,6 +290,7 @@ if __name__ == "__main__":
             start_time = time.time()
             result, steps = ode.rk4(function, a, b)
             time_taken = time.time() - start_time
+            exact_result = exact_int.integrate(a, b)
             rk4_error = abs((exact_result - result) / exact_result) * 100
             rk4_errors.append(rk4_error)
 
@@ -294,6 +301,7 @@ if __name__ == "__main__":
             start_time = time.time()
             result, steps = simpsons.integrate(function, a, b)
             time_taken = time.time() - start_time
+            exact_result = exact_int.integrate(a, b)
             simpsons_error = abs((exact_result - result) / exact_result) * 100
             simpsons_errors.append(simpsons_error)
 
@@ -302,8 +310,9 @@ if __name__ == "__main__":
         # Improper
         for b in b_values:
             start_time = time.time()
-            result, steps = improper.integrate(function, a, b)
+            result, steps = improper.integrate(function, b)
             time_taken = time.time() - start_time
+            exact_result = exact_int.integrate(a, b)
             improper_error = abs((exact_result - result) / exact_result) * 100
             improper_errors.append(improper_error)
 
@@ -314,4 +323,12 @@ if __name__ == "__main__":
     plt.scatter(b_values, trapezium_errors, marker = 'x')
     plt.show()
     plt.scatter(b_values, monte_carlo_errors, marker = 'x')
+    plt.show()
+    plt.scatter(b_values, euler_errors, marker = 'x')
+    plt.show()
+    plt.scatter(b_values, rk4_errors, marker = 'x')
+    plt.show()
+    plt.scatter(b_values, simpsons_errors, marker = 'x')
+    plt.show()
+    plt.scatter(b_values, improper_errors, marker = 'x')
     plt.show()

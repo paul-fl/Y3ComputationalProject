@@ -1,5 +1,5 @@
 import numpy as np
-
+import matplotlib.pyplot as plt
 
 class BackgroundFunction:
     
@@ -24,3 +24,15 @@ class ExperimentalFunction:
     def __call__(self, m):
 
         return self.photon_pairs * (1 / (self.sigma * np.sqrt(2 * np.pi))) * np.exp(-((m - self.mean) ** 2) / (2 * self.sigma ** 2))
+    
+
+if __name__ == "__main__":
+    background = BackgroundFunction()
+    experimental = ExperimentalFunction()
+
+    m_values = np.linspace(100, 150, 500)
+    background_values = [background(m) for m in m_values]
+    experimental_values = [experimental(m) for m in m_values]
+    
+    plt.plot(m_values, np.array(background_values) + np.array(experimental_values), label='Superimposed Function')
+    plt.show()
