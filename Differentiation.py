@@ -3,7 +3,7 @@ import time
 
 class FiniteDifference:
     
-    def __init__(self, func, point, step_size = 1e-5):
+    def __init__(self, func, point, step_size = 1e-9):
         self.func = func
         self.point = np.array(point , dtype = float)
         self.step_size = step_size

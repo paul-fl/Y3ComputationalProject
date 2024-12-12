@@ -53,8 +53,8 @@ if __name__ == "__main__":
 
     significance_analysis = SignificanceAnalysis(background, experimental, trapezium)
 
-    m_l_values = np.linspace(120, 124, 30)
-    m_u_values = np.linspace(126, 130, 30)
+    m_l_values = np.linspace(120, 124, 100)
+    m_u_values = np.linspace(126, 130, 100)
 
     sig_matrix = np.zeros((len(m_l_values), len(m_u_values)))
 
@@ -90,42 +90,44 @@ if __name__ == "__main__":
 
     ## Calculate the maximum significance given by grid seach for differnt grid spacings ##
 
-    grid_spacings = np.linspace(5, 100, 100)
-    sig_matrix
-    max_significances = []
-    grid_search_time = []
+    if True:
+        grid_spacings = np.linspace(5, 100, 100)
+        sig_matrix
+        max_sig = []
+        time_passed = []
 
-    for spacing in grid_spacings:
-        m_l_values = np.linspace(120, 124, int(spacing))
-        m_u_values = np.linspace(126, 130, int(spacing))
+        for spacing in grid_spacings:
+            m_l_values = np.linspace(120, 124, int(spacing))
+            m_u_values = np.linspace(126, 130, int(spacing))
 
-        def significance_function(m_l, m_u):
-            return significance_analysis.calculate_significance(m_l, m_u)
+            def significance_function(m_l, m_u):
+                return significance_analysis.calculate_significance(m_l, m_u)
 
-        maximisation = Maximisation(func=significance_function, m_l_values=m_l_values, m_u_values=m_u_values)
-        start_time = time.time()
-        _, max_s = maximisation.grid_search()
-        time_taken = time.time() - start_time
-        grid_search_time.append(time_taken)
-        max_significances.append(max_s)
+            maximisation = Maximisation(func=significance_function, m_l_values=m_l_values, m_u_values=m_u_values)
+            start_time = time.time()
+            _, max_s = maximisation.grid_search()
+            time_taken = time.time() - start_time
+            time_passed.append(time_taken)
+            max_sig.append(max_s)
 
-    fig, ax1 = plt.subplots()
+        
+        fig, ax1 = plt.subplots()
 
-    color = 'tab:red'
-    ax1.set_xlabel('Grid Spacing')
-    ax1.set_ylabel('Maximum Significance', color=color)
-    ax1.scatter(grid_spacings, max_significances, marker='x', color=color)
-    ax1.tick_params(axis='y', labelcolor=color)
+        color = 'tab:red'
+        ax1.set_xlabel('Grid Spacing')
+        ax1.set_ylabel('Maximum Significance', color=color)
+        ax1.scatter(grid_spacings, max_sig, marker='x', color=color)
+        ax1.tick_params(axis='y', labelcolor=color)
 
-    ax2 = ax1.twinx()
-    color = 'tab:blue'
-    ax2.set_ylabel('Grid Search Time (s)', color=color)
-    ax2.plot(grid_spacings, grid_search_time, color=color)
-    ax2.tick_params(axis='y', labelcolor=color)
+        ax2 = ax1.twinx()
+        color = 'tab:blue'
+        ax2.set_ylabel('Grid Search Time (s)', color=color)
+        ax2.plot(grid_spacings, time_passed, color=color)
+        ax2.tick_params(axis='y', labelcolor=color)
 
-    fig.tight_layout()
-    plt.title("Maximum Significance and Grid Search Time vs Grid Spacing")
-    plt.show()
+        fig.tight_layout()
+        plt.title("Maximum Significance and Grid Search Time vs Grid Spacing")
+        plt.show()
 
     ## Find probability fo significance 
 
@@ -146,6 +148,7 @@ if __name__ == "__main__":
     plt.plot(shifts_MH, NH_m_H, marker='x')
     plt.xlabel("m_H shift")
     plt.ylabel("Value of NH")
+    plt.title("Value of NH for different shifts in m_H")
     plt.show()
 
     # Shifting photons
@@ -157,6 +160,7 @@ if __name__ == "__main__":
     plt.plot(shifts_photons, NH_photons, marker='x')
     plt.xlabel("photon shift")
     plt.ylabel("Value of NH")
+    plt.title("Value of NH for different shifts in photon pairs")
     plt.show()
 
     # Shifting theory
@@ -168,6 +172,7 @@ if __name__ == "__main__":
     plt.plot(shifts_theory, NH_theory, marker='x')
     plt.xlabel("theory shift")
     plt.ylabel("Value of NH")
+    plt.title("Value of NH for different shifts in theory uncertainty")
     plt.show()
 
     ## Compare with the background statistical uncertainty ##

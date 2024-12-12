@@ -31,7 +31,7 @@ class Maximisation:
         
         return guess, best_func_value
 
-    def gradient_method(self, guess, alpha = 0.01, max_iterations = 10000, tolerance = 1e-8):
+    def gradient_method(self, guess, alpha = 0.01, max_iterations = 10000, tolerance = 1e-9):
         guess = np.array(guess, dtype=float)
 
         for iteration in range(max_iterations):

@@ -226,20 +226,44 @@ if __name__ == "__main__":
         print(f"Improper result: {improper_result}")
  
     ## Comparisson of number steps to iterate, tiem taken ##
-    if True:
+    a, b = 0.1, 5
+   
+    def linear(x):
+        return x
         
-        def linear(x):
-            return x
-        
-        def logarithmic(x):
-            return (x * np.log(x))
+    def logarithmic(x):
+        return (x * np.log(x))
 
-        a, b = 0, 5
-
-        exact_int = ErrorFunctionTest()
+    exact_int = ErrorFunctionTest()
         
-        exact_result = exact_int.integrate(a, b)
-        function = exact_int.gaussian
+    exact_result = exact_int.integrate(a, b)
+    
+    
+    
+    functions = {
+        "Gaussian": {
+            "function": exact_int.gaussian,
+            "exact_integral": exact_int.integrate  
+        },
+        "Linear": {
+            "function": linear,
+            "exact_integral": lambda a, b: (b**2 / 2) - (a**2 / 2)
+        },
+        "Logarithmic": {
+            "function": logarithmic,
+            "exact_integral": lambda a, b: ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
+        }
+    }
+
+    for func_name, func_data in functions.items():
+        function = func_data["function"]
+        exact_integral = func_data["exact_integral"]
+        
+
+
+
+
+        #function = exact_int.gaussian
         #function = linear
         #function = logarithmic
 
@@ -257,7 +281,7 @@ if __name__ == "__main__":
         rk4_errors = []
         improper_errors = []
 
-        b_values = np.linspace(0.1, 5, 100)
+        b_values = np.linspace(0.2, 5, 10)
 
 
         # Trapezium
@@ -341,21 +365,24 @@ if __name__ == "__main__":
         print(f"Midpoint: Final Result = {result:.10f}, Error = {improper_error:.10f}%, Steps = {steps}, Time Taken = {time_taken:.6f}s")
 
     ## Plot how the error changes with different upper limit ##
+    title_fontsize = 30
+    label_fontsize = 24
+    tick_fontsize = 20
 
     fig, axs = plt.subplots(2, 1, figsize=(10, 10))
 
     axs[0].plot(b_values, simpsons_errors, label="Simpson's", marker='x')
-    axs[0].set_title("Simpson's Method")
-    axs[0].set_xlabel("Upper Limit of Integration (a)")
-    axs[0].set_ylabel("Relative Error (%)")
-    axs[0].legend()
+    axs[0].set_title("Simpson's Method", fontsize=title_fontsize)
+    axs[0].set_xlabel("Upper Limit of Integration (a)", fontsize=label_fontsize)
+    axs[0].set_ylabel("Relative Error (%)", fontsize=label_fontsize)
+    axs[0].tick_params(axis='both', which='major', labelsize=tick_fontsize)
     axs[0].grid()
 
     axs[1].plot(b_values, trapezium_errors, label="Trapezium", marker='x')
-    axs[1].set_title("Trapezium Method")
-    axs[1].set_xlabel("Upper Limit of Integration (a)")
-    axs[1].set_ylabel("Relative Error (%)")
-    axs[1].legend()
+    axs[1].set_title("Trapezium Method", fontsize=title_fontsize)
+    axs[1].set_xlabel("Upper Limit of Integration (a)", fontsize=label_fontsize)
+    axs[1].set_ylabel("Relative Error (%)", fontsize=label_fontsize)
+    axs[1].tick_params(axis='both', which='major', labelsize=tick_fontsize)
     axs[1].grid()
 
     plt.tight_layout()
@@ -364,17 +391,17 @@ if __name__ == "__main__":
     fig, axs = plt.subplots(2, 1, figsize=(10, 10))
 
     axs[0].plot(b_values, monte_carlo_errors, label="Monte Carlo", marker='s')
-    axs[0].set_title("Monte Carlo Method")
-    axs[0].set_xlabel("Upper Limit of Integration (a)")
-    axs[0].set_ylabel("Relative Error (%)")
-    axs[0].legend()
+    axs[0].set_title("Monte Carlo Method", fontsize=title_fontsize)
+    axs[0].set_xlabel("Upper Limit of Integration (a)", fontsize=label_fontsize)
+    axs[0].set_ylabel("Relative Error (%)", fontsize=label_fontsize)
+    axs[0].tick_params(axis='both', which='major', labelsize=tick_fontsize)
     axs[0].grid()
 
     axs[1].plot(b_values, improper_errors, label="Composite", marker='x')
-    axs[1].set_title("Composite Method")
-    axs[1].set_xlabel("Upper Limit of Integration (a)")
-    axs[1].set_ylabel("Relative Error (%)")
-    axs[1].legend()
+    axs[1].set_title("Composite Method", fontsize=title_fontsize)
+    axs[1].set_xlabel("Upper Limit of Integration (a)", fontsize=label_fontsize)
+    axs[1].set_ylabel("Relative Error (%)", fontsize=label_fontsize)
+    axs[1].tick_params(axis='both', which='major', labelsize=tick_fontsize)
     axs[1].grid()
 
     plt.tight_layout()
@@ -383,17 +410,17 @@ if __name__ == "__main__":
     fig, axs = plt.subplots(2, 1, figsize=(10, 10))
 
     axs[0].plot(b_values, euler_errors, label="Euler", marker='x')
-    axs[0].set_title("Euler Method")
-    axs[0].set_xlabel("Upper Limit of Integration (a)")
-    axs[0].set_ylabel("Relative Error (%)")
-    axs[0].legend()
+    axs[0].set_title("Euler Method", fontsize=title_fontsize)
+    axs[0].set_xlabel("Upper Limit of Integration (a)", fontsize=label_fontsize)
+    axs[0].set_ylabel("Relative Error (%)", fontsize=label_fontsize)
+    axs[0].tick_params(axis='both', which='major', labelsize=tick_fontsize)
     axs[0].grid()
 
     axs[1].plot(b_values, rk4_errors, label="RK4", marker='x')
-    axs[1].set_title("RK4 Method")
-    axs[1].set_xlabel("Upper Limit of Integration (a)")
-    axs[1].set_ylabel("Relative Error (%)")
-    axs[1].legend()
+    axs[1].set_title("RK4 Method", fontsize=title_fontsize)
+    axs[1].set_xlabel("Upper Limit of Integration (a)", fontsize=label_fontsize)
+    axs[1].set_ylabel("Relative Error (%)", fontsize=label_fontsize)
+    axs[1].tick_params(axis='both', which='major', labelsize=tick_fontsize)
     axs[1].grid()
 
     plt.tight_layout()
