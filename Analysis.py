@@ -11,6 +11,7 @@ from Functions import BackgroundFunction, ExperimentalFunction
 from Integration import ExtendedTrapezium
 from Maximisation import Maximisation
 from Inputs import InputAnalysis
+import time
 
 
 
@@ -86,6 +87,45 @@ if __name__ == "__main__":
 
     gradient_values, gradient_s = maximisation.gradient_method(best_values)
     print(f"Gradient Method sValues: {gradient_values}, Max Sig: {gradient_s}")
+
+    ## Calculate the maximum significance given by grid seach for differnt grid spacings ##
+
+    grid_spacings = np.linspace(5, 100, 100)
+    sig_matrix
+    max_significances = []
+    grid_search_time = []
+
+    for spacing in grid_spacings:
+        m_l_values = np.linspace(120, 124, int(spacing))
+        m_u_values = np.linspace(126, 130, int(spacing))
+
+        def significance_function(m_l, m_u):
+            return significance_analysis.calculate_significance(m_l, m_u)
+
+        maximisation = Maximisation(func=significance_function, m_l_values=m_l_values, m_u_values=m_u_values)
+        start_time = time.time()
+        _, max_s = maximisation.grid_search()
+        time_taken = time.time() - start_time
+        grid_search_time.append(time_taken)
+        max_significances.append(max_s)
+
+    fig, ax1 = plt.subplots()
+
+    color = 'tab:red'
+    ax1.set_xlabel('Grid Spacing')
+    ax1.set_ylabel('Maximum Significance', color=color)
+    ax1.scatter(grid_spacings, max_significances, marker='x', color=color)
+    ax1.tick_params(axis='y', labelcolor=color)
+
+    ax2 = ax1.twinx()
+    color = 'tab:blue'
+    ax2.set_ylabel('Grid Search Time (s)', color=color)
+    ax2.plot(grid_spacings, grid_search_time, color=color)
+    ax2.tick_params(axis='y', labelcolor=color)
+
+    fig.tight_layout()
+    plt.title("Maximum Significance and Grid Search Time vs Grid Spacing")
+    plt.show()
 
     ## Find probability fo significance 
 

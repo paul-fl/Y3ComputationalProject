@@ -123,7 +123,7 @@ class MonteCarlo(GaussianIntegrator):
     
 class ODE(GaussianIntegrator):
    
-    def euler(self, func, a, b, max_steps = 100000):
+    def euler(self, func, a, b, max_steps = 1000000):
         steps = 2  
         previous_result = 0
 
@@ -228,11 +228,20 @@ if __name__ == "__main__":
     ## Comparisson of number steps to iterate, tiem taken ##
     if True:
         
+        def linear(x):
+            return x
+        
+        def logarithmic(x):
+            return (x * np.log(x))
+
         a, b = 0, 5
 
         exact_int = ErrorFunctionTest()
+        
         exact_result = exact_int.integrate(a, b)
         function = exact_int.gaussian
+        #function = linear
+        #function = logarithmic
 
         trapezium_iterative = ExtendedTrapeziumIterative()
         trapezium_set = ExtendedTrapezium()
@@ -250,11 +259,14 @@ if __name__ == "__main__":
 
         b_values = np.linspace(0.1, 5, 100)
 
+
         # Trapezium
         for b in b_values:
             start_time = time.time()
             result, steps = trapezium_set.integrate(function, a, b)
             time_taken = time.time() - start_time
+            #exact_result = (b**2 / 2) - (a**2 / 2)
+            #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
             exact_result = exact_int.integrate(a, b)
             trapzeium_error = abs((exact_result - result) / exact_result) * 100
             trapezium_errors.append(trapzeium_error)
@@ -267,6 +279,8 @@ if __name__ == "__main__":
             start_time = time.time()
             result, samples = monte_carlo.integrate(function, a, b)
             time_taken = time.time() - start_time
+            #exact_result = (b**2 / 2) - (a**2 / 2)
+            #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
             exact_result = exact_int.integrate(a, b)
             monte_carlo_error = abs((exact_result - result) / exact_result) * 100
             monte_carlo_errors.append(monte_carlo_error)
@@ -277,8 +291,10 @@ if __name__ == "__main__":
 
         for b in b_values:
             start_time = time.time()
-            result, steps = ode.euler(function, a, b, steps)
+            result, steps = ode.euler(function, a, b)
             time_taken = time.time() - start_time
+            #exact_result = (b**2 / 2) - (a**2 / 2)
+            #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
             exact_result = exact_int.integrate(a, b)
             euler_error = abs((exact_result - result) / exact_result) * 100
             euler_errors.append(euler_error)
@@ -290,6 +306,8 @@ if __name__ == "__main__":
             start_time = time.time()
             result, steps = ode.rk4(function, a, b)
             time_taken = time.time() - start_time
+            #exact_result = (b**2 / 2) - (a**2 / 2)
+            #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
             exact_result = exact_int.integrate(a, b)
             rk4_error = abs((exact_result - result) / exact_result) * 100
             rk4_errors.append(rk4_error)
@@ -301,6 +319,8 @@ if __name__ == "__main__":
             start_time = time.time()
             result, steps = simpsons.integrate(function, a, b)
             time_taken = time.time() - start_time
+            #exact_result = (b**2 / 2) - (a**2 / 2)
+            #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
             exact_result = exact_int.integrate(a, b)
             simpsons_error = abs((exact_result - result) / exact_result) * 100
             simpsons_errors.append(simpsons_error)
@@ -312,6 +332,8 @@ if __name__ == "__main__":
             start_time = time.time()
             result, steps = improper.integrate(function, b)
             time_taken = time.time() - start_time
+            #exact_result = (b**2 / 2) - (a**2 / 2)
+            #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
             exact_result = exact_int.integrate(a, b)
             improper_error = abs((exact_result - result) / exact_result) * 100
             improper_errors.append(improper_error)
@@ -320,15 +342,59 @@ if __name__ == "__main__":
 
     ## Plot how the error changes with different upper limit ##
 
-    plt.scatter(b_values, trapezium_errors, marker = 'x')
+    fig, axs = plt.subplots(2, 1, figsize=(10, 10))
+
+    axs[0].plot(b_values, simpsons_errors, label="Simpson's", marker='x')
+    axs[0].set_title("Simpson's Method")
+    axs[0].set_xlabel("Upper Limit of Integration (a)")
+    axs[0].set_ylabel("Relative Error (%)")
+    axs[0].legend()
+    axs[0].grid()
+
+    axs[1].plot(b_values, trapezium_errors, label="Trapezium", marker='x')
+    axs[1].set_title("Trapezium Method")
+    axs[1].set_xlabel("Upper Limit of Integration (a)")
+    axs[1].set_ylabel("Relative Error (%)")
+    axs[1].legend()
+    axs[1].grid()
+
+    plt.tight_layout()
     plt.show()
-    plt.scatter(b_values, monte_carlo_errors, marker = 'x')
+
+    fig, axs = plt.subplots(2, 1, figsize=(10, 10))
+
+    axs[0].plot(b_values, monte_carlo_errors, label="Monte Carlo", marker='s')
+    axs[0].set_title("Monte Carlo Method")
+    axs[0].set_xlabel("Upper Limit of Integration (a)")
+    axs[0].set_ylabel("Relative Error (%)")
+    axs[0].legend()
+    axs[0].grid()
+
+    axs[1].plot(b_values, improper_errors, label="Composite", marker='x')
+    axs[1].set_title("Composite Method")
+    axs[1].set_xlabel("Upper Limit of Integration (a)")
+    axs[1].set_ylabel("Relative Error (%)")
+    axs[1].legend()
+    axs[1].grid()
+
+    plt.tight_layout()
     plt.show()
-    plt.scatter(b_values, euler_errors, marker = 'x')
-    plt.show()
-    plt.scatter(b_values, rk4_errors, marker = 'x')
-    plt.show()
-    plt.scatter(b_values, simpsons_errors, marker = 'x')
-    plt.show()
-    plt.scatter(b_values, improper_errors, marker = 'x')
+
+    fig, axs = plt.subplots(2, 1, figsize=(10, 10))
+
+    axs[0].plot(b_values, euler_errors, label="Euler", marker='x')
+    axs[0].set_title("Euler Method")
+    axs[0].set_xlabel("Upper Limit of Integration (a)")
+    axs[0].set_ylabel("Relative Error (%)")
+    axs[0].legend()
+    axs[0].grid()
+
+    axs[1].plot(b_values, rk4_errors, label="RK4", marker='x')
+    axs[1].set_title("RK4 Method")
+    axs[1].set_xlabel("Upper Limit of Integration (a)")
+    axs[1].set_ylabel("Relative Error (%)")
+    axs[1].legend()
+    axs[1].grid()
+
+    plt.tight_layout()
     plt.show()

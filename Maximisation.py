@@ -36,7 +36,7 @@ class Maximisation:
 
         for iteration in range(max_iterations):
             finite_difference = FiniteDifference(self.func, guess)
-            gradient = finite_difference.forward_difference()
+            gradient = finite_difference.central_difference()
 
             guess += alpha * gradient
             
