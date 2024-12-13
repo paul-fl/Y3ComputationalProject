@@ -259,14 +259,6 @@ if __name__ == "__main__":
         function = func_data["function"]
         exact_integral = func_data["exact_integral"]
         
-
-
-
-
-        #function = exact_int.gaussian
-        #function = linear
-        #function = logarithmic
-
         trapezium_iterative = ExtendedTrapeziumIterative()
         trapezium_set = ExtendedTrapezium()
         simpsons = Simpsons()
@@ -291,7 +283,7 @@ if __name__ == "__main__":
             time_taken = time.time() - start_time
             #exact_result = (b**2 / 2) - (a**2 / 2)
             #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
-            exact_result = exact_int.integrate(a, b)
+            #exact_result = exact_int.integrate(a, b)
             trapzeium_error = abs((exact_result - result) / exact_result) * 100
             trapezium_errors.append(trapzeium_error)
 
@@ -305,7 +297,7 @@ if __name__ == "__main__":
             time_taken = time.time() - start_time
             #exact_result = (b**2 / 2) - (a**2 / 2)
             #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
-            exact_result = exact_int.integrate(a, b)
+            #exact_result = exact_int.integrate(a, b)
             monte_carlo_error = abs((exact_result - result) / exact_result) * 100
             monte_carlo_errors.append(monte_carlo_error)
 
@@ -319,7 +311,7 @@ if __name__ == "__main__":
             time_taken = time.time() - start_time
             #exact_result = (b**2 / 2) - (a**2 / 2)
             #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
-            exact_result = exact_int.integrate(a, b)
+            #exact_result = exact_int.integrate(a, b)
             euler_error = abs((exact_result - result) / exact_result) * 100
             euler_errors.append(euler_error)
 
@@ -332,7 +324,7 @@ if __name__ == "__main__":
             time_taken = time.time() - start_time
             #exact_result = (b**2 / 2) - (a**2 / 2)
             #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
-            exact_result = exact_int.integrate(a, b)
+            #exact_result = exact_int.integrate(a, b)
             rk4_error = abs((exact_result - result) / exact_result) * 100
             rk4_errors.append(rk4_error)
 
@@ -345,7 +337,7 @@ if __name__ == "__main__":
             time_taken = time.time() - start_time
             #exact_result = (b**2 / 2) - (a**2 / 2)
             #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
-            exact_result = exact_int.integrate(a, b)
+            #exact_result = exact_int.integrate(a, b)
             simpsons_error = abs((exact_result - result) / exact_result) * 100
             simpsons_errors.append(simpsons_error)
 
@@ -358,7 +350,7 @@ if __name__ == "__main__":
             time_taken = time.time() - start_time
             #exact_result = (b**2 / 2) - (a**2 / 2)
             #exact_result = ((b**2 / 2) * np.log(b) - (b**2 / 4)) - ((a**2 / 2) * np.log(a) - (a**2 / 4))
-            exact_result = exact_int.integrate(a, b)
+            #exact_result = exact_int.integrate(a, b)
             improper_error = abs((exact_result - result) / exact_result) * 100
             improper_errors.append(improper_error)
 

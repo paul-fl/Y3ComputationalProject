@@ -191,7 +191,7 @@ if __name__ == "__main__":
     print(f"Max Deviation (Photon shift): {photons_error:.4f}")
     print(f"Max Deviation (Theory shift): {theory_error:.4f}")
 
-    combined_unc = np.sqrt(statistical_error**2 + mass_error**2 + photons_error**2 + theory_error**2)
+    combined_unc = np.sqrt(mass_error**2 + photons_error**2 + theory_error**2)
     print(f"Total uncertainty: {combined_unc}")
 
     five_sigma_prob_unc = significance_analysis.five_sigma(m_l_best, m_u_best, combined_unc)
